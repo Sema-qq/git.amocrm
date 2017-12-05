@@ -19,15 +19,21 @@ class Amo
 			'get_pipelines' => 'https://' . $subdomain . '.amocrm.ru/private/api/v2/json/pipelines/list'
 		);
 		
+		
+		
 		$user = array(
 			'USER_LOGIN' => $login,
 			'USER_HASH' => $hash
 		);
-		
+
 		$this->request($this->urls['login'], $user);
 		$this->account = $this->request($this->urls['current'])->response->account;
 	}
 	
+	public function getAccount(){
+		return $this->account;
+	}
+
 	protected function request($url, $data = null)
 	{
 		$errors = array(
@@ -40,15 +46,15 @@ class Amo
 			502 => 'Bad gateway',
 			503 => 'Service unavailable'
 		);
-		
+
 		$ch = curl_init($url);
-		
+
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 		curl_setopt($ch, CURLOPT_HEADER, false);
-		curl_setopt($ch, CURLOPT_COOKIEFILE, dirname(__FILE__) . '/cookie.txt');
-		curl_setopt($ch, CURLOPT_COOKIEJAR, dirname(__FILE__) . '/cookie.txt');
+		curl_setopt($ch, CURLOPT_COOKIEFILE, dirname(__FILE__) . 'cookie.txt');
+		curl_setopt($ch, CURLOPT_COOKIEJAR, dirname(__FILE__) . 'cookie.txt');
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		
@@ -61,11 +67,11 @@ class Amo
 		$res_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		
 		curl_close($ch);
-		
+
 		if ($res_code != 200 && $res_code != 204) {
 			exit($errors[$res_code]);
 		}
-
+		
 		return json_decode($response);
 	}
 	
