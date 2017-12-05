@@ -171,4 +171,9 @@ class Amo
 	{
 		return $this->request($this->urls['get_pipelines'])->response->pipelines;
 	}
+	
+	public function getAccount()
+	{
+	return $this->account;
+	}
 }
